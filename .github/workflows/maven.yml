@@ -26,11 +26,4 @@ jobs:
         run: mvn test --file $POM_FILE
       - name: Say something nice
         if: success()
-        run: echo -e
-          '_   _   _____   _____   ______ 
-          | \ | | |_   _| / ____| |  ____|
-          |  \| |   | |  | |      | |__   
-          | . ` |   | |  | |      |  __|  
-          | |\  |_ _| |_ | |____ _| |____ 
-          |_| \_(_)_____(_)_____(_)______|'
-          
+        run: cat ./github/workflows/something_nice.txt
