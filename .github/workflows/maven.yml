@@ -1,4 +1,4 @@
-name: Maven build
+name: Java CI
 
 on: 
   push:
@@ -9,7 +9,8 @@ on:
       - master
 
 jobs:
-  build:
+  build_and_test:
+    name: Build the application and run tests
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
@@ -19,10 +20,5 @@ jobs:
           java-version: 11
       - name: Build with Maven 
         run: mvn -B package --file pom.xml
-
-  test:
-    runs-on: ubuntu-18.04
-    steps:
       - name: Run tests
         run: mvn test --file pom.xml
-    needs: build
