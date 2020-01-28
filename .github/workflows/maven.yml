@@ -26,8 +26,8 @@ jobs:
         run: mvn test --file $POM_FILE
       - name: Say something nice
         if: success()
-        run: echo \
-         " _   _   _____   _____   ______ 
+        run: echo -e
+          "_   _   _____   _____   ______ 
           | \ | | |_   _| / ____| |  ____|
           |  \| |   | |  | |      | |__   
           | . ` |   | |  | |      |  __|  
