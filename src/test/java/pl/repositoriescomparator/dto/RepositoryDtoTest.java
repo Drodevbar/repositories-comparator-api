@@ -10,7 +10,7 @@ public class RepositoryDtoTest {
     public void testIsEmptyReturnsTrueForEmptyDto() {
         RepositoryDto emptyDto = RepositoryDto.empty();
 
-        assertThat(emptyDto.isEmpty()).isFalse();
+        assertThat(emptyDto.isEmpty()).isTrue();
     }
 
     @Test
