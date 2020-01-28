@@ -26,4 +26,4 @@ jobs:
         run: mvn test --file $POM_FILE
       - name: Say something nice
         if: success()
-        run: cat ./github/workflows/something_nice.txt
+        run: cat ./.github/workflows/something_nice.txt
