@@ -31,7 +31,7 @@ The service now only supports getting information about GitHub repositories. Alt
 |---|---|---|---|
 |1|/api/repository/{owner}/{name}|owner - (string, required) owner of the repository <br> name - (string, required) name of the repository|GET|
 
-If given repository was found, the API will respond with `200` status code and JSON body containing repository data, for example:
+If given repository was found, API will respond with `200` status code and JSON body containing repository data, for example:
 ```JSON
 {
   "forks_number": 1237,
@@ -57,4 +57,4 @@ If given repository was not found, API will respond with `404` status code and J
 |---|---|---|---|
 |2|/admin/ping||GET|
 
-A simple endpoint to check if application is responding. Expacted response is "pong" in plain TEXT format.
+A simple endpoint to check if application responds. Expacted response is "pong" in plain TEXT format.
