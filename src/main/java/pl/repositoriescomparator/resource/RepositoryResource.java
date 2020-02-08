@@ -23,7 +23,7 @@ public class RepositoryResource {
     }
 
     @GetMapping("/{owner}/{name}")
-    public ResponseEntity getRepository(@PathVariable String owner, @PathVariable String name) {
+    public ResponseEntity<Object> getRepository(@PathVariable String owner, @PathVariable String name) {
         RepositoryDto dto = repositoryService.build(owner, name);
 
         if (dto.isEmpty()) {

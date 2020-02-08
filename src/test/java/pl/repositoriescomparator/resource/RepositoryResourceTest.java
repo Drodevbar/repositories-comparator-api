@@ -22,7 +22,7 @@ public class RepositoryResourceTest {
         dto.setForksNumber(1);
         when(repositoryService.build("foo", "bar")).thenReturn(dto);
 
-        ResponseEntity responseEntity = repositoryResource.getRepository("foo", "bar");
+        ResponseEntity<Object> responseEntity = repositoryResource.getRepository("foo", "bar");
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isEqualTo(dto);

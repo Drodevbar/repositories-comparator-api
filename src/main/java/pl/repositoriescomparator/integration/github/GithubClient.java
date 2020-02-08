@@ -3,6 +3,7 @@ package pl.repositoriescomparator.integration.github;
 import pl.repositoriescomparator.integration.ConfigurableRepositoryInterface;
 
 import java.net.http.HttpClient;
+import java.time.Duration;
 
 abstract public class GithubClient implements ConfigurableRepositoryInterface {
 
@@ -13,7 +14,9 @@ abstract public class GithubClient implements ConfigurableRepositoryInterface {
     protected String repository;
 
     public GithubClient() {
-        httpClient = HttpClient.newHttpClient();
+        httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
     }
 
     public GithubClient(HttpClient httpClient) {

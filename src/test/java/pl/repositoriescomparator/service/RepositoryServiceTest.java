@@ -59,7 +59,7 @@ public class RepositoryServiceTest {
     }
 
     @Test
-    public void testItBuildEmptyRepositoryDto_WhenErrorOccurred() {
+    public void testItBuildsEmptyRepositoryDto_WhenErrorOccurred() {
         when(primaryDataRepositoryService.hasError()).thenReturn(true);
 
         RepositoryDto returnedDto = service.build("foo", "bar");

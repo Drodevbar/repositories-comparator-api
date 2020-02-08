@@ -11,10 +11,10 @@ import java.time.Instant;
 @Component
 public class RepositoryBuilder {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public RepositoryDto withPrimaryData(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = OBJECT_MAPPER.readTree(json);
+        JsonNode jsonNode = objectMapper.readTree(json);
 
         dto.setStarsNumber(jsonNode.get("stargazers_count").asInt());
         dto.setForksNumber(jsonNode.get("forks_count").asInt());
@@ -24,7 +24,7 @@ public class RepositoryBuilder {
     }
 
     public RepositoryDto withLatestReleaseDate(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = OBJECT_MAPPER.readTree(json);
+        JsonNode jsonNode = objectMapper.readTree(json);
 
         String dateString = jsonNode.get("published_at").asText();
         dto.setLatestReleaseDate(Instant.parse(dateString));
@@ -33,7 +33,7 @@ public class RepositoryBuilder {
     }
 
     public RepositoryDto withOpenPullRequestsNumber(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = OBJECT_MAPPER.readTree(json);
+        JsonNode jsonNode = objectMapper.readTree(json);
 
         dto.setOpenPullRequestsNumber(jsonNode.get("total_count").asInt());
 
@@ -41,7 +41,7 @@ public class RepositoryBuilder {
     }
 
     public RepositoryDto withClosedPullRequestsNumber(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = OBJECT_MAPPER.readTree(json);
+        JsonNode jsonNode = objectMapper.readTree(json);
 
         dto.setClosedPullRequestsNumber(jsonNode.get("total_count").asInt());
 
@@ -49,7 +49,7 @@ public class RepositoryBuilder {
     }
 
     public RepositoryDto withMergedPullRequestsNumber(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = OBJECT_MAPPER.readTree(json);
+        JsonNode jsonNode = objectMapper.readTree(json);
 
         dto.setMergedPullRequestsNumber(jsonNode.get("total_count").asInt());
 

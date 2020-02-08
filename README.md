@@ -17,10 +17,16 @@ The service now only supports getting information about GitHub repositories. Alt
 - GitHub Actions (CI)
 
 ### Installation
-(*) _In order to run this service, you have to have `Docker` installed on your machine_
+(*) _In order to run this service, you need to have `Docker` installed on your machine_
+
+The project contains simple bash script `deploy.sh`.
+The script will check if Docker is installed and Docker daemon is running on your machine.
+If so, it will build the image and run the container on the specified `port`.
+If port is not specified, it defaults to `9090`. 
 
 ```bash
-// TODO
+cd <project-dir>
+bash deploy.sh [port]
 ```
 
 ### Api documentation

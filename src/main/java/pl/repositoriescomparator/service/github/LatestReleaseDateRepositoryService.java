@@ -1,8 +1,11 @@
 package pl.repositoriescomparator.service.github;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
 import pl.repositoriescomparator.builder.RepositoryBuilder;
 import pl.repositoriescomparator.dto.RepositoryDto;
 import pl.repositoriescomparator.integration.github.GithubRepositoryClient;
@@ -11,6 +14,7 @@ import pl.repositoriescomparator.service.LatestReleaseDateRepositoryInterface;
 import java.net.http.HttpResponse;
 
 @Service
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class LatestReleaseDateRepositoryService extends StatusAwareRepositoryService implements LatestReleaseDateRepositoryInterface {
 
     private final GithubRepositoryClient repositoryClient;
