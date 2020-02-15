@@ -1,58 +1,50 @@
 package pl.repositoriescomparator.builder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import pl.repositoriescomparator.dto.RepositoryDto;
-
-import java.time.Instant;
+import pl.repositoriescomparator.dto.repository.*;
 
 @Component
 public class RepositoryBuilder {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private RepositoryDto dto = new RepositoryDto();
 
-    public RepositoryDto withPrimaryData(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(json);
+    public RepositoryBuilder withPrimaryData(PrimaryDataDto primaryDataDto) {
+        dto.setForksNumber(primaryDataDto.getForksNumber());
+        dto.setStarsNumber(primaryDataDto.getStarsNumber());
+        dto.setWatchersNumber(primaryDataDto.getWatchersNumber());
 
-        dto.setStarsNumber(jsonNode.get("stargazers_count").asInt());
-        dto.setForksNumber(jsonNode.get("forks_count").asInt());
-        dto.setWatchersNumber(jsonNode.get("watchers_count").asInt());
-
-        return dto;
+        return this;
     }
 
-    public RepositoryDto withLatestReleaseDate(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(json);
+    public RepositoryBuilder withLatestReleaseDate(LatestReleaseDateDto latestReleaseDateDto) {
+        dto.setLatestReleaseDate(latestReleaseDateDto.getLatestReleaseDate());
 
-        String dateString = jsonNode.get("published_at").asText();
-        dto.setLatestReleaseDate(Instant.parse(dateString));
-
-        return dto;
+        return this;
     }
 
-    public RepositoryDto withOpenPullRequestsNumber(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(json);
+    public RepositoryBuilder withOpenPullRequestsNumber(OpenPullRequestsNumberDto openPullRequestsNumberDto) {
+        dto.setOpenPullRequestsNumber(openPullRequestsNumberDto.getNumber());
 
-        dto.setOpenPullRequestsNumber(jsonNode.get("total_count").asInt());
-
-        return dto;
+        return this;
     }
 
-    public RepositoryDto withClosedPullRequestsNumber(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(json);
+    public RepositoryBuilder withClosedPullRequestsNumber(ClosedPullRequestsNumberDto closedPullRequestsNumberDto) {
+        dto.setClosedPullRequestsNumber(closedPullRequestsNumberDto.getNumber());
 
-        dto.setClosedPullRequestsNumber(jsonNode.get("total_count").asInt());
-
-        return dto;
+        return this;
     }
 
-    public RepositoryDto withMergedPullRequestsNumber(RepositoryDto dto, String json) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(json);
+    public RepositoryBuilder withMergedPullRequestsNumber(MergedPullRequestsNumberDto mergedPullRequestsNumberDto) {
+        dto.setMergedPullRequestsNumber(mergedPullRequestsNumberDto.getNumber());
 
-        dto.setMergedPullRequestsNumber(jsonNode.get("total_count").asInt());
+        return this;
+    }
 
-        return dto;
+    public RepositoryDto build() {
+        RepositoryDto builtDto = dto;
+        dto = new RepositoryDto();
+
+        return builtDto;
     }
 }

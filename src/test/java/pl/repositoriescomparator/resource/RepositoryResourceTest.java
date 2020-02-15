@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.repositoriescomparator.dto.RepositoryDto;
-import pl.repositoriescomparator.exception.RepositoryNotFoundException;
+import pl.repositoriescomparator.application.exception.RepositoryNotFoundException;
 import pl.repositoriescomparator.service.RepositoryService;
 
 import static org.assertj.core.api.Assertions.assertThat;

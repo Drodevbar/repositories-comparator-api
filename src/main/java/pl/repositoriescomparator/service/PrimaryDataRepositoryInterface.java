@@ -1,8 +1,10 @@
 package pl.repositoriescomparator.service;
 
-import pl.repositoriescomparator.dto.RepositoryDto;
+import pl.repositoriescomparator.dto.repository.PrimaryDataDto;
 
-public interface PrimaryDataRepositoryInterface extends StatusAwareRepositoryInterface {
+import java.util.Optional;
 
-    RepositoryDto withPrimaryData(RepositoryDto dto, String owner, String name);
+public interface PrimaryDataRepositoryInterface {
+
+    Optional<PrimaryDataDto> withPrimaryData(String owner, String name);
 }

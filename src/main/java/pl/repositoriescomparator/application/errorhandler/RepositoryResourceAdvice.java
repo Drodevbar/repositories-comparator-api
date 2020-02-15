@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.repositoriescomparator.application.errorresponse.RepositoryNotFoundResponse;
-import pl.repositoriescomparator.exception.RepositoryNotFoundException;
+import pl.repositoriescomparator.application.exception.RepositoryNotFoundException;
 
 @ControllerAdvice
 public class RepositoryResourceAdvice {

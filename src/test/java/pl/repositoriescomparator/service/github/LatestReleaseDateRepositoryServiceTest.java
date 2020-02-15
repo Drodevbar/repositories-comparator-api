@@ -1,88 +1,62 @@
 package pl.repositoriescomparator.service.github;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
-import pl.repositoriescomparator.builder.RepositoryBuilder;
-import pl.repositoriescomparator.dto.RepositoryDto;
+import org.springframework.http.HttpStatus;
+import pl.repositoriescomparator.builder.repository.LatestReleaseDateBuilder;
+import pl.repositoriescomparator.dto.repository.LatestReleaseDateDto;
 import pl.repositoriescomparator.integration.github.GithubRepositoryClient;
 
 import java.net.http.HttpResponse;
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LatestReleaseDateRepositoryServiceTest {
 
-    private final GithubRepositoryClient repositoryClient = mock(GithubRepositoryClient.class);
-    private final RepositoryBuilder repositoryBuilder = mock(RepositoryBuilder.class);
-    private final LatestReleaseDateRepositoryService service = new LatestReleaseDateRepositoryService(repositoryClient, repositoryBuilder);
+    private static final String DATETIME = "2020-01-01T12:12:12Z";
+
+    private final GithubRepositoryClient client = mock(GithubRepositoryClient.class);
+    private final LatestReleaseDateBuilder builder = new LatestReleaseDateBuilder();
+    private final LatestReleaseDateRepositoryService service = new LatestReleaseDateRepositoryService(client, builder);
     @SuppressWarnings("unchecked")
     private final HttpResponse<String> httpResponse = (HttpResponse<String>) mock(HttpResponse.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void testItBuildsRepositoryDtoWithLatestReleaseDate_WhenResponseIsSuccessful() throws Exception {
-        RepositoryDto dto = new RepositoryDto();
+    public void testItBuildsDto_WhenResponseIsSuccessful() throws Exception {
         ObjectNode objectNode = objectMapper.createObjectNode();
-        String dateString = "2020-01-01T12:12:12Z";
-        objectNode.put("published_at", dateString);
-        String jsonString = objectNode.toString();
-        RepositoryDto modifiedDto = new RepositoryDto();
-        modifiedDto.setLatestReleaseDate(Instant.parse(dateString));
+        objectNode.put("published_at", DATETIME);
+        when(httpResponse.statusCode()).thenReturn(HttpStatus.OK.value());
+        when(httpResponse.body()).thenReturn(objectNode.toString());
+        when(client.getLatestReleaseResponse()).thenReturn(httpResponse);
 
-        when(httpResponse.statusCode()).thenReturn(200);
-        when(httpResponse.body()).thenReturn(jsonString);
-        when(repositoryClient.getLatestReleaseResponse()).thenReturn(httpResponse);
-        when(repositoryBuilder.withLatestReleaseDate(dto, jsonString)).thenReturn(modifiedDto);
+        Optional<LatestReleaseDateDto> builtDto = service.withLatestReleaseDate("foo", "bar");
 
-        RepositoryDto returnedDto = service.withLatestReleaseDate(dto, "foo", "bar");
-
-        assertThat(returnedDto.getLatestReleaseDate()).isEqualTo(modifiedDto.getLatestReleaseDate());
-        assertThat(service.hasError()).isFalse();
-
-        verify(repositoryClient, times(1)).setRepository("foo", "bar");
-        verify(repositoryClient, times(1)).getLatestReleaseResponse();
-        verify(repositoryBuilder, times(1)).withLatestReleaseDate(dto, jsonString);
+        assertThat(builtDto.isPresent()).isTrue();
+        assertThat(builtDto.get()).isEqualToComparingFieldByField(new LatestReleaseDateDto(Instant.parse(DATETIME)));
     }
 
     @Test
-    public void testItReturnsNotModifiedDto_WhenResponseFails() throws Exception {
-        RepositoryDto dto = new RepositoryDto();
-        Instant latestReleaseDate = dto.getLatestReleaseDate();
-        when(httpResponse.statusCode()).thenReturn(404);
-        when(repositoryClient.getLatestReleaseResponse()).thenReturn(httpResponse);
+    public void testItBuildsEmptyOptional_WhenResponseIsNotSuccessful() throws Exception {
+        when(httpResponse.statusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        dto = service.withLatestReleaseDate(dto, "foo", "bar");
+        Optional<LatestReleaseDateDto> builtDto = service.withLatestReleaseDate("foo", "bar");
 
-        assertThat(dto.getLatestReleaseDate()).isEqualTo(latestReleaseDate);
-        assertThat(service.hasError()).isTrue();
-
-        verify(repositoryClient, times(1)).setRepository("foo", "bar");
-        verify(repositoryClient, times(1)).getLatestReleaseResponse();
-        verify(repositoryBuilder, times(0)).withLatestReleaseDate(any(), anyString());
+        assertThat(builtDto.isPresent()).isFalse();
     }
 
     @Test
-    public void testItReturnsNotModifiedDto_WhenResponseJsonIsInvalid() throws Exception {
-        RepositoryDto dto = new RepositoryDto();
-        Instant latestReleaseDate = dto.getLatestReleaseDate();
-        String invalidJsonString = "foo";
+    public void testItBuildsEmptyOptional_WhenInvalidJsonProvided() throws Exception {
+        when(httpResponse.statusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        when(httpResponse.body()).thenReturn("invalid json string");
 
-        when(httpResponse.statusCode()).thenReturn(200);
-        when(httpResponse.body()).thenReturn(invalidJsonString);
-        when(repositoryClient.getLatestReleaseResponse()).thenReturn(httpResponse);
-        when(repositoryBuilder.withLatestReleaseDate(dto, invalidJsonString)).thenThrow(JsonProcessingException.class);
+        Optional<LatestReleaseDateDto> builtDto = service.withLatestReleaseDate("foo", "bar");
 
-        dto = service.withLatestReleaseDate(dto, "foo", "bar");
-
-        assertThat(dto.getLatestReleaseDate()).isEqualTo(latestReleaseDate);
-        assertThat(service.hasError()).isTrue();
-
-        verify(repositoryClient, times(1)).setRepository("foo", "bar");
-        verify(repositoryClient, times(1)).getLatestReleaseResponse();
-        verify(repositoryBuilder, times(1)).withLatestReleaseDate(dto, invalidJsonString);
+        assertThat(builtDto.isPresent()).isFalse();
     }
 }

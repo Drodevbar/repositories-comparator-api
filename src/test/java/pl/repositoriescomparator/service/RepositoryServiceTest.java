@@ -1,9 +1,12 @@
 package pl.repositoriescomparator.service;
 
 import org.junit.Test;
+import pl.repositoriescomparator.builder.RepositoryBuilder;
 import pl.repositoriescomparator.dto.RepositoryDto;
+import pl.repositoriescomparator.dto.repository.*;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,63 +17,50 @@ public class RepositoryServiceTest {
     private final PrimaryDataRepositoryInterface primaryDataRepositoryService = mock(PrimaryDataRepositoryInterface.class);
     private final LatestReleaseDateRepositoryInterface latestReleaseDataRepositoryService = mock(LatestReleaseDateRepositoryInterface.class);
     private final PullRequestsNumberRepositoryInterface pullRequestsDataRepositoryService = mock(PullRequestsNumberRepositoryInterface.class);
+    private final RepositoryBuilder builder = new RepositoryBuilder();
     private final RepositoryService service = new RepositoryService(
             primaryDataRepositoryService,
             latestReleaseDataRepositoryService,
-            pullRequestsDataRepositoryService
+            pullRequestsDataRepositoryService,
+            builder
     );
 
     @Test
-    public void testItBuildsRepositoryDto() {
-        RepositoryDto dto = new RepositoryDto();
+    public void testItBuildsDto_WhenPresentOptionalDtoReturnedFromInjectedService() {
+        Instant now = Instant.now();
+        PrimaryDataDto primaryDataDto = new PrimaryDataDto(1, 2, 3);
+        LatestReleaseDateDto latestReleaseDateDto = new LatestReleaseDateDto(now);
+        ClosedPullRequestsNumberDto closedPullRequestsNumberDto = new ClosedPullRequestsNumberDto(4);
+        OpenPullRequestsNumberDto openPullRequestsNumberDto = new OpenPullRequestsNumberDto(5);
+        MergedPullRequestsNumberDto mergedPullRequestsNumberDto = new MergedPullRequestsNumberDto(6);
+        when(primaryDataRepositoryService.withPrimaryData(any(), any())).thenReturn(Optional.of(primaryDataDto));
+        when(latestReleaseDataRepositoryService.withLatestReleaseDate(any(), any())).thenReturn(Optional.of(latestReleaseDateDto));
+        when(pullRequestsDataRepositoryService.withClosedPullRequestsNumber(any(), any())).thenReturn(Optional.of(closedPullRequestsNumberDto));
+        when(pullRequestsDataRepositoryService.withOpenPullRequestsNumber(any(), any())).thenReturn(Optional.of(openPullRequestsNumberDto));
+        when(pullRequestsDataRepositoryService.withMergedPullRequestsNumber(any(), any())).thenReturn(Optional.of(mergedPullRequestsNumberDto));
 
-        when(primaryDataRepositoryService.hasError()).thenReturn(false);
+        RepositoryDto builtDto = service.build("foo", "bar");
 
-        int forksNumber = 1;
-        dto.setForksNumber(forksNumber);
-        when(primaryDataRepositoryService.withPrimaryData(any(), anyString(), anyString())).thenReturn(dto);
-
-        Instant date = Instant.parse("2020-01-01T12:12:12Z");
-        dto.setLatestReleaseDate(date);
-        when(latestReleaseDataRepositoryService.withLatestReleaseDate(any(), anyString(), anyString())).thenReturn(dto);
-
-        int openPullRequestsNumber = 2;
-        dto.setOpenPullRequestsNumber(openPullRequestsNumber);
-        when(pullRequestsDataRepositoryService.withOpenPullRequestsNumber(any(), anyString(), anyString())).thenReturn(dto);
-
-        int closedPullRequestsNumber = 3;
-        dto.setClosedPullRequestsNumber(closedPullRequestsNumber);
-        when(pullRequestsDataRepositoryService.withClosedPullRequestsNumber(any(), anyString(), anyString())).thenReturn(dto);
-
-        int mergedPullRequestsNumber = 4;
-        dto.setMergedPullRequestsNumber(mergedPullRequestsNumber);
-        when(pullRequestsDataRepositoryService.withMergedPullRequestsNumber(any(), anyString(), anyString())).thenReturn(dto);
-
-        RepositoryDto returnedDto = service.build("foo", "bar");
-
-        assertThat(returnedDto).isEqualToComparingFieldByField(dto);
-
-        verify(primaryDataRepositoryService, times(1)).withPrimaryData(any(), eq("foo"), eq("bar"));
-        verify(primaryDataRepositoryService, times(1)).hasError();
-        verify(latestReleaseDataRepositoryService, times(1)).withLatestReleaseDate(any(), eq("foo"), eq("bar"));
-        verify(pullRequestsDataRepositoryService, times(1)).withOpenPullRequestsNumber(any(), eq("foo"), eq("bar"));
-        verify(pullRequestsDataRepositoryService, times(1)).withClosedPullRequestsNumber(any(), eq("foo"), eq("bar"));
-        verify(pullRequestsDataRepositoryService, times(1)).withMergedPullRequestsNumber(any(), eq("foo"), eq("bar"));
+        assertThat(builtDto.isEmpty()).isFalse();
+        assertThat(builtDto.getLatestReleaseDate()).isEqualTo(now);
+        assertThat(builtDto.getForksNumber()).isEqualTo(1);
+        assertThat(builtDto.getStarsNumber()).isEqualTo(2);
+        assertThat(builtDto.getWatchersNumber()).isEqualTo(3);
+        assertThat(builtDto.getClosedPullRequestsNumber()).isEqualTo(4);
+        assertThat(builtDto.getOpenPullRequestsNumber()).isEqualTo(5);
+        assertThat(builtDto.getMergedPullRequestsNumber()).isEqualTo(6);
     }
 
     @Test
-    public void testItBuildsEmptyRepositoryDto_WhenErrorOccurred() {
-        when(primaryDataRepositoryService.hasError()).thenReturn(true);
+    public void testItBuildsEmptyDto_WhenEmptyOptionalDtoReturnedFromInjectedService() {
+        when(primaryDataRepositoryService.withPrimaryData(any(), any())).thenReturn(Optional.empty());
 
-        RepositoryDto returnedDto = service.build("foo", "bar");
+        RepositoryDto builtDto = service.build("foo", "bar");
 
-        assertThat(returnedDto.isEmpty()).isTrue();
-
-        verify(primaryDataRepositoryService, times(1)).withPrimaryData(any(), eq("foo"), eq("bar"));
-        verify(primaryDataRepositoryService, times(1)).hasError();
-        verify(latestReleaseDataRepositoryService, times(0)).withLatestReleaseDate(any(), anyString(), anyString());
-        verify(pullRequestsDataRepositoryService, times(0)).withOpenPullRequestsNumber(any(), anyString(), anyString());
-        verify(pullRequestsDataRepositoryService, times(0)).withClosedPullRequestsNumber(any(), anyString(), anyString());
-        verify(pullRequestsDataRepositoryService, times(0)).withMergedPullRequestsNumber(any(), anyString(), anyString());
+        assertThat(builtDto.isEmpty()).isTrue();
+        verify(latestReleaseDataRepositoryService, times(0)).withLatestReleaseDate(any(), any());
+        verify(pullRequestsDataRepositoryService, times(0)).withClosedPullRequestsNumber(any(), any());
+        verify(pullRequestsDataRepositoryService, times(0)).withOpenPullRequestsNumber(any(), any());
+        verify(pullRequestsDataRepositoryService, times(0)).withClosedPullRequestsNumber(any(), any());
     }
 }

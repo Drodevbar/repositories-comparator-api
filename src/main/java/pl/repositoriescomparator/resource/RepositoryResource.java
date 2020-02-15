@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.repositoriescomparator.dto.RepositoryDto;
-import pl.repositoriescomparator.exception.RepositoryNotFoundException;
+import pl.repositoriescomparator.application.exception.RepositoryNotFoundException;
 import pl.repositoriescomparator.service.RepositoryService;
 
 @RestController

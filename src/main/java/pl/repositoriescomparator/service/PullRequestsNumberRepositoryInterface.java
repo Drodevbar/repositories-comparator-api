@@ -1,10 +1,14 @@
 package pl.repositoriescomparator.service;
 
-import pl.repositoriescomparator.dto.RepositoryDto;
+import pl.repositoriescomparator.dto.repository.ClosedPullRequestsNumberDto;
+import pl.repositoriescomparator.dto.repository.MergedPullRequestsNumberDto;
+import pl.repositoriescomparator.dto.repository.OpenPullRequestsNumberDto;
 
-public interface PullRequestsNumberRepositoryInterface extends StatusAwareRepositoryInterface {
+import java.util.Optional;
 
-    RepositoryDto withOpenPullRequestsNumber(RepositoryDto dto, String owner, String name);
-    RepositoryDto withClosedPullRequestsNumber(RepositoryDto dto, String owner, String name);
-    RepositoryDto withMergedPullRequestsNumber(RepositoryDto dto, String owner, String name);
+public interface PullRequestsNumberRepositoryInterface {
+
+    Optional<OpenPullRequestsNumberDto> withOpenPullRequestsNumber(String owner, String name);
+    Optional<ClosedPullRequestsNumberDto> withClosedPullRequestsNumber(String owner, String name);
+    Optional<MergedPullRequestsNumberDto> withMergedPullRequestsNumber(String owner, String name);
 }

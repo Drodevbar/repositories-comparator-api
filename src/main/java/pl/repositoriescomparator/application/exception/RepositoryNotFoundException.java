@@ -1,4 +1,4 @@
-package pl.repositoriescomparator.exception;
+package pl.repositoriescomparator.application.exception;
 
 public class RepositoryNotFoundException extends RuntimeException {
 

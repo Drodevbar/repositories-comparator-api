@@ -1,8 +1,10 @@
 package pl.repositoriescomparator.service;
 
-import pl.repositoriescomparator.dto.RepositoryDto;
+import pl.repositoriescomparator.dto.repository.LatestReleaseDateDto;
 
-public interface LatestReleaseDateRepositoryInterface extends StatusAwareRepositoryInterface {
+import java.util.Optional;
 
-    RepositoryDto withLatestReleaseDate(RepositoryDto dto, String owner, String name);
+public interface LatestReleaseDateRepositoryInterface {
+
+    Optional<LatestReleaseDateDto> withLatestReleaseDate(String owner, String name);
 }
