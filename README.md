@@ -2,7 +2,7 @@
 
 ---
 
-Just a simple WEB API written in Java 11 in order to practise some _Java things_, good coding practises, testing, Docker and CI from GitHub. 
+Just a simple WEB API written in Java 11 in order to practise some _Java things_, good coding practises, testing (Unit & Integration), Docker and CI from GitHub. 
 
 The service offers functionality of acquaring information about repository, such as: forsks/stars/watchers number, open/closed/merged pull requests number and latest release date.
 
@@ -11,7 +11,7 @@ The service now only supports getting information about GitHub repositories. Alt
 ### Tools:
 - Java 11
 - Spring Boot
-- JUnit, AssertJ, Mockito
+- JUnit, AssertJ, Mockito, WireMock
 - Maven
 - Docker
 - GitHub Actions (CI)

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "integration.github.baseuri",
+      "type": "java.lang.String",
+      "description": "Base uri for github API client."
+    }
+  ] }
