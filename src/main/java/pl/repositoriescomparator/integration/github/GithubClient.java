@@ -9,18 +9,14 @@ import java.time.Duration;
 abstract public class GithubClient implements ConfigurableRepositoryInterface {
 
     protected final HttpClient httpClient;
-    @Value("${integration.github.baseuri}")
     protected String uri;
     protected String repository;
 
-    public GithubClient() {
+    public GithubClient(@Value("${integration.github.baseuri}") final String uri) {
+        this.uri = uri;
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
-    }
-
-    public GithubClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
     }
 
     public void setRepository(String owner, String repositoryName) {

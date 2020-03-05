@@ -1,5 +1,6 @@
 package pl.repositoriescomparator.integration.github;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -12,9 +13,9 @@ public class GithubRepositoryClient extends GithubClient {
     private static final String API_REPOS = "repos";
     private static final String API_LATEST_RELEASE = "releases/latest";
 
-    public GithubRepositoryClient() {
-        super();
-        uri += '/' + API_REPOS;
+    public GithubRepositoryClient(@Value("${integration.github.baseuri}") final String uri) {
+        super(uri);
+        this.uri += '/' + API_REPOS;
     }
 
     public HttpResponse<String> getPrimaryResponse() throws Exception {

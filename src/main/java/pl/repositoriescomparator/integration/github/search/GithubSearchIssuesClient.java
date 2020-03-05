@@ -1,5 +1,6 @@
 package pl.repositoriescomparator.integration.github.search;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pl.repositoriescomparator.integration.github.GithubSearchClient;
 
@@ -12,9 +13,9 @@ public class GithubSearchIssuesClient extends GithubSearchClient {
 
     private static final String API_ISSUES = "issues";
 
-    public GithubSearchIssuesClient() {
-        super();
-        uri += '/' + API_ISSUES;
+    public GithubSearchIssuesClient(@Value("${integration.github.baseuri}") final String uri) {
+        super(uri);
+        this.uri += '/' + API_ISSUES;
     }
 
     public HttpResponse<String> getResponseByTypeAndState(String type, String state) throws Exception {

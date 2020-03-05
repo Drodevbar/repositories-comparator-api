@@ -44,19 +44,19 @@ public class RepositoryResourceIntegrationTest {
 
     @Test
     public void testItReturnsRepositoryData_WhenRepositoryFound() throws Exception {
-        stubFor(get(urlEqualTo("/" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME))
+        stubFor(get(urlEqualTo("/repos/" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withStatus(HttpStatus.OK.value())
                         .withBody(createPrimaryRepositoryDataJsonString())));
 
-        stubFor(get(urlEqualTo("/" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME + "/releases/latest"))
+        stubFor(get(urlEqualTo("/repos/" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME + "/releases/latest"))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withStatus(HttpStatus.OK.value())
                         .withBody(createLatestReleaseDateRepositoryDataJsonString())));
 
-        stubFor(get(urlPathEqualTo("/"))
+        stubFor(get(urlPathEqualTo("/search/issues"))
                 .withQueryParam("q", containing("repo:" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -77,7 +77,7 @@ public class RepositoryResourceIntegrationTest {
 
     @Test
     public void testItReturnsNotFound_WhenRepositoryNotFound() throws Exception {
-        stubFor(get(urlEqualTo("/" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME))
+        stubFor(get(urlEqualTo("/repos/" + REPOSITORY_OWNER + "/" + REPOSITORY_NAME))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withStatus(HttpStatus.NOT_FOUND.value())));
